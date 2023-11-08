@@ -6,24 +6,41 @@
  */
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.PriorityQueue;
 
 public class HuffmanTree {	
 	Node root;
 	
 	public Node huffmanEncoding(HashMap<Node, Integer> frequencyTable) {
 		// just testing feel free to remove 
-		Node test0 = new Node(null, null, "x"); 
-		Node test1 = new Node(null, test0, "a"); 
-		Node test2 = new Node(null, test1, "b"); 
-		Node test3 = new Node(null, null, "c"); 
-		Node test4 = new Node(test2, test3, "d"); 
-		Node test5 = new Node(null, null, "e"); 
-		root = combineTrees(test4, test5);
-		System.out.println(findPathToNode("x", root)); 
+		Node test0 = new Node(null, null, "x",100); 
+		Node test1 = new Node(null, null, "a",2); 
+		Node test2 = new Node(null, null, "b",1); 
+		Node test3 = new Node(null, null, "c",1); 
+		Node test4 = new Node(null, null, "d",10); 
+		Node test5 = new Node(null, null, "e",11); 
+		
+		//create node queue
+		PriorityQueue<Node> pQueue = new PriorityQueue<Node>(new NodeComparator());
+		
+		//add test nodes for testing to test :)
+		pQueue.add(test0);
+		pQueue.add(test1);
+		pQueue.add(test2);
+		pQueue.add(test3);
+		pQueue.add(test4);
+		pQueue.add(test5);
+		
+		//loop until there is only one Node in the queue.
+		//This node will be the root of the final tree.
+		while (pQueue.size() > 1) {
+			Node n1 = pQueue.poll();
+			Node n2 = pQueue.poll();
+			pQueue.add(combineTrees(n1, n2));
+		}
+		this.root = pQueue.poll();
 		printTree();
 		return null;
-		//TODO -> constantly combine max until only one tree node left
 	} 
 	
 	/**
@@ -35,7 +52,8 @@ public class HuffmanTree {
 		while (!queue.isEmpty()) {
 			// print each layer of the tree row by row 
 			Node curNode = queue.removeFirst(); 
-			if (null != curNode.getValue()) System.out.print(curNode.getValue() + " "); 
+			//if (null != curNode.getValue()) System.out.print(curNode.getValue() + " "); 
+			System.out.println(curNode.toString() + " "); 
 			if (null != curNode.getLeft()) queue.addLast(curNode.getLeft());
 			if (null != curNode.getRight()) queue.addLast(curNode.getRight());
 		}
@@ -81,7 +99,7 @@ public class HuffmanTree {
 	 * @return The new parent of the nodes.
 	 */
 	private Node combineTrees(Node leftTree, Node rightTree) {
-		Node combinedTree = new Node(leftTree, rightTree, null); 
+		Node combinedTree = new Node(leftTree, rightTree, null, leftTree.getFrequency() + rightTree.getFrequency()); 
 		return combinedTree;
 	}
 }
