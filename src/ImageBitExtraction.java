@@ -1,13 +1,9 @@
-
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-
 
 public class ImageBitExtraction {
 
@@ -40,26 +36,18 @@ public class ImageBitExtraction {
 					byte blue = (byte) pixel.getBlue();
 					byte green = (byte) pixel.getGreen();
 					
-
 					//add to bytes. 
 					bytesArray[i] = red;
 					i++;
-					bytesArray[i] = blue;
-					i++; 
 					bytesArray[i] = green;
 					i++;
-					
-				
-					
+					bytesArray[i] = blue;
+					i++; 
+
 				}
 			}
-			
-			
-			
-			
 			return bytesArray;
 		} catch (IOException e) {
-
 			if(!imageFile.exists()) {
 				System.out.println("file does not exist");
 			}else if(!imageFile.canRead()) {

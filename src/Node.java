@@ -6,10 +6,10 @@ public class Node{
 
 	private Node left;
 	private Node right;
-	private String value;
+	private Byte value;
 	private int frequency;
 
-	public Node(Node left, Node right, String value, int frequency) {
+	public Node(Node left, Node right, Byte value, int frequency) {
 		this.left = left;
 		this.right = right;
 		this.value = value;
@@ -47,14 +47,14 @@ public class Node{
 	/**
 	 * @return the value
 	 */
-	public String getValue() {
+	public Byte getValue() {
 		return value;
 	}
 
 	/**
 	 * @param value the value to set
 	 */
-	public void setValue(String value) {
+	public void setValue(Byte value) {
 		this.value = value;
 	}
 
@@ -73,7 +73,7 @@ public class Node{
 	}
 	
 	public String toString() {
-		String value = this.value==null ? "null" : this.value;
+		Byte value = this.value==null ? null : this.value;
 		return "{value: " + value + ", frequency = " + this.frequency + "}";
 	}
 }

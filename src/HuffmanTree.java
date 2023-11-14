@@ -4,33 +4,13 @@
  * bytes are minimized. 
  * Date: 10/20/2023
  */
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class HuffmanTree {	
 	Node root;
 	
-	public Node huffmanEncoding(HashMap<Node, Integer> frequencyTable) {
-		// just testing feel free to remove 
-		Node test0 = new Node(null, null, "x",100); 
-		Node test1 = new Node(null, null, "a",2); 
-		Node test2 = new Node(null, null, "b",1); 
-		Node test3 = new Node(null, null, "c",1); 
-		Node test4 = new Node(null, null, "d",10); 
-		Node test5 = new Node(null, null, "e",11); 
-		
-		//create node queue
-		PriorityQueue<Node> pQueue = new PriorityQueue<Node>(new NodeComparator());
-		
-		//add test nodes for testing to test :)
-		pQueue.add(test0);
-		pQueue.add(test1);
-		pQueue.add(test2);
-		pQueue.add(test3);
-		pQueue.add(test4);
-		pQueue.add(test5);
-		
+	public Node huffmanEncoding(PriorityQueue<Node> pQueue) {
 		//loop until there is only one Node in the queue.
 		//This node will be the root of the final tree.
 		while (pQueue.size() > 1) {
@@ -38,9 +18,8 @@ public class HuffmanTree {
 			Node n2 = pQueue.poll();
 			pQueue.add(combineTrees(n1, n2));
 		}
-		this.root = pQueue.poll();
-		printTree();
-		return null;
+		root = pQueue.poll();
+		return root;
 	} 
 	
 	/**
@@ -68,9 +47,10 @@ public class HuffmanTree {
 	 * 
 	 * @return The String containing the path or null if it does not exist.
 	 */
-	private String findPathToNode(String nodeValue, Node curNode) {
+	public String findPathToNode(Byte nodeValue, Node curNode) {
+		//System.out.println("before");
 		if (null == curNode) return null; 
-		if (null != curNode.getValue() && curNode.getValue().equals(nodeValue)) return ""; 
+		if (null != curNode.getValue() && curNode.getValue() == nodeValue) return ""; 
 		// search left and right subtrees to find a node
 		String leftSearch = findPathToNode(nodeValue, curNode.getLeft());
 		if (null != leftSearch) return "0" + leftSearch;
