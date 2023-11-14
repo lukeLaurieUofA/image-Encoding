@@ -24,6 +24,12 @@ public class CreateTree {
 		PriorityQueue<Node> pQueue = addNodesToQueue(theNodes);
 		HuffmanTree huffmanTree = new HuffmanTree();
 		Node root = huffmanTree.huffmanEncoding(pQueue);
+		
+		HashMap encodingMappings = new HashMap<>();
+		for()
+		{
+			huffmanTree.findPathToNode();
+		}
 	}
 
 	private static PriorityQueue<Node> addNodesToQueue(ArrayList<Node> theNodes) {
