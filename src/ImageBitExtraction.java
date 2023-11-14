@@ -39,15 +39,15 @@ public class ImageBitExtraction {
 					//add to bytes. 
 					bytesArray[i] = red;
 					i++;
-					bytesArray[i] = blue;
-					i++; 
 					bytesArray[i] = green;
 					i++;
+					bytesArray[i] = blue;
+					i++; 
+
 				}
 			}
 			return bytesArray;
 		} catch (IOException e) {
-
 			if(!imageFile.exists()) {
 				System.out.println("file does not exist");
 			}else if(!imageFile.canRead()) {
