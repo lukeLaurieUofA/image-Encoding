@@ -4,7 +4,6 @@
  * bytes are minimized. 
  * Date: 10/20/2023
  */
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -19,9 +18,8 @@ public class HuffmanTree {
 			Node n2 = pQueue.poll();
 			pQueue.add(combineTrees(n1, n2));
 		}
-		this.root = pQueue.poll();
-		printTree();
-		return null;
+		root = pQueue.poll();
+		return root;
 	} 
 	
 	/**
@@ -49,9 +47,10 @@ public class HuffmanTree {
 	 * 
 	 * @return The String containing the path or null if it does not exist.
 	 */
-	private String findPathToNode(String nodeValue, Node curNode) {
+	public String findPathToNode(Byte nodeValue, Node curNode) {
+		//System.out.println("before");
 		if (null == curNode) return null; 
-		if (null != curNode.getValue() && curNode.getValue().equals(nodeValue)) return ""; 
+		if (null != curNode.getValue() && curNode.getValue() == nodeValue) return ""; 
 		// search left and right subtrees to find a node
 		String leftSearch = findPathToNode(nodeValue, curNode.getLeft());
 		if (null != leftSearch) return "0" + leftSearch;
