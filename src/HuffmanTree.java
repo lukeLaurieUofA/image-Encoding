@@ -11,26 +11,7 @@ import java.util.PriorityQueue;
 public class HuffmanTree {	
 	Node root;
 	
-	public Node huffmanEncoding(HashMap<Node, Integer> frequencyTable) {
-		// just testing feel free to remove 
-		Node test0 = new Node(null, null, "x",100); 
-		Node test1 = new Node(null, null, "a",2); 
-		Node test2 = new Node(null, null, "b",1); 
-		Node test3 = new Node(null, null, "c",1); 
-		Node test4 = new Node(null, null, "d",10); 
-		Node test5 = new Node(null, null, "e",11); 
-		
-		//create node queue
-		PriorityQueue<Node> pQueue = new PriorityQueue<Node>(new NodeComparator());
-		
-		//add test nodes for testing to test :)
-		pQueue.add(test0);
-		pQueue.add(test1);
-		pQueue.add(test2);
-		pQueue.add(test3);
-		pQueue.add(test4);
-		pQueue.add(test5);
-		
+	public Node huffmanEncoding(PriorityQueue<Node> pQueue) {
 		//loop until there is only one Node in the queue.
 		//This node will be the root of the final tree.
 		while (pQueue.size() > 1) {
