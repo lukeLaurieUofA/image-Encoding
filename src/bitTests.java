@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 class bitTests {
 		@Test
 		void creationTest() {
-			byte arr[] = ImageBitExtraction.getBites("./src/us.png");
+			byte arr[] = ImageBitExtraction.getBites("./src/purple.png");
 			if (arr == null) {
 				fail();
 			}
 			System.out.print("Start: ");
 			for(int i = 0; i < arr.length; i++) {
-				System.out.print(i % 0xFF+ " ");
+				System.out.print((arr[i] & 0xFF)+ " ");
 			}
 		}
 		@Test

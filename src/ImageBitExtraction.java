@@ -1,3 +1,10 @@
+/*
+ * class name: ImageBitExtraction.java
+ * Purpose: pull out the bits from the image by reading each pixel's RGB 
+ * value.
+ */
+
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,7 +43,7 @@ public class ImageBitExtraction {
 					byte blue = (byte) pixel.getBlue();
 					byte green = (byte) pixel.getGreen();
 					
-					//add to bytes. 
+					//add to bytes array in the correct RGB order. 
 					bytesArray[i] = red;
 					i++;
 					bytesArray[i] = green;
