@@ -15,7 +15,7 @@ public class CreateTree {
 
 	public static void main(String[] args) {
 		// load in the images
-		byte[] imageBytes = ImageBitExtraction.getBites("smileyface.jpg");
+		byte[] imageBytes = ImageBitExtraction.getBites("src/snail.bmp");
 		ArrayList<Node> theNodes = addNodesToList(imageBytes);
 		PriorityQueue<Node> pQueue = addNodesToQueue(theNodes);
 		// create a tree from the frequencies
