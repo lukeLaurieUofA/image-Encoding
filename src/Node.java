@@ -2,16 +2,18 @@
  * This will provide all the needed data to keep track of a single node in a tree
  * Date: 10/20/2023
  */
-public class Node {
+public class Node{
 
 	private Node left;
 	private Node right;
-	private String value;
+	private Byte value;
+	private int frequency;
 
-	public Node(Node left, Node right, String value) {
+	public Node(Node left, Node right, Byte value, int frequency) {
 		this.left = left;
 		this.right = right;
 		this.value = value;
+		this.frequency = frequency;
 	}
 
 	/**
@@ -45,14 +47,33 @@ public class Node {
 	/**
 	 * @return the value
 	 */
-	public String getValue() {
+	public Byte getValue() {
 		return value;
 	}
 
 	/**
 	 * @param value the value to set
 	 */
-	public void setValue(String value) {
+	public void setValue(Byte value) {
 		this.value = value;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public int getFrequency() {
+		return frequency;
+	}
+	
+	/**
+	 * @param value of the frequency to set
+	 */
+	public void setFrequency(int frequency) {
+		this.frequency = frequency;
+	}
+	
+	public String toString() {
+		Byte value = this.value==null ? null : this.value;
+		return "{value: " + value + ", frequency = " + this.frequency + "}";
 	}
 }
