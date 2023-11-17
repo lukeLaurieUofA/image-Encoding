@@ -24,7 +24,18 @@ public class CreateTree {
 		// maps each byte to their encoded values
 		HashMap<Byte, String> encodingMappings = encodeBytesIntoMap(huffmanTree, root, imageBytes);
 		ArrayList<String> encodedBytes = encodeBytes(imageBytes, encodingMappings);
-		System.out.println(encodedBytes);
+		// decode the bytes back to the original 
+		
+		byte[] decodedBytes = decode(encodedBytes, huffmanTree);
+		System.out.println(decodedBytes);
+	}
+
+	private static byte[] decode(ArrayList<String> encodedBytes, HuffmanTree huffmanTree) {
+		byte[] decodedBytes = new byte[encodedBytes.size()]; 
+		for (int i = 0; i < encodedBytes.size(); i++) {
+			decodedBytes[i] = huffmanTree.findByteFromPath(encodedBytes.get(i), huffmanTree.root);
+		}
+		return decodedBytes;
 	}
 
 	/**
