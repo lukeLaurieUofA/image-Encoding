@@ -7,6 +7,7 @@
  * Date: 10/20/2023
  */
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
@@ -14,8 +15,10 @@ import java.util.PriorityQueue;
 public class CreateTree {
 
 	public static void main(String[] args) {
+		String imagePath = "src/snail.bmp";
+		String encodedFilePath = "src/encodedBytesFile";
 		// load in the images
-		byte[] imageBytes = ImageBitExtraction.getBites("src/snail.bmp");
+		byte[] imageBytes = ImageBitExtraction.getBites(imagePath);
 		ArrayList<Node> theNodes = addNodesToList(imageBytes);
 		PriorityQueue<Node> pQueue = addNodesToQueue(theNodes);
 		// create a tree from the frequencies
@@ -24,14 +27,101 @@ public class CreateTree {
 		// maps each byte to their encoded values
 		HashMap<Byte, String> encodingMappings = encodeBytesIntoMap(huffmanTree, root, imageBytes);
 		ArrayList<String> encodedBytes = encodeBytes(imageBytes, encodingMappings);
-		// decode the bytes back to the original 
-		
+		byte[] theBytes = generateAllBytes(encodedBytes);
+		// writes the compressed bytes to the file
+		WriteToFile.write(theBytes, encodedFilePath);
+		compareFileSizes(encodedFilePath, imagePath);
+		// decode the bytes back to the original
 		byte[] decodedBytes = decode(encodedBytes, huffmanTree);
-		System.out.println(decodedBytes);
+		checkFilesMatch(imageBytes, decodedBytes);
 	}
 
+	/**
+	 * This will compare two files of bytes to make sure that they match.
+	 * 
+	 * @param imageBytes   is the bytes from the image.
+	 * @param decodedBytes is the bytes that where decoded.
+	 * 
+	 * @return The list of the encoded strings.
+	 */
+	private static void checkFilesMatch(byte[] imageBytes, byte[] decodedBytes) {
+		// verify that each of the bytes match
+		if (imageBytes.length != decodedBytes.length) {
+			System.out.println("The decoded file is not the same as the original!");
+			return;
+		}
+		for (int i = 0; i < imageBytes.length; i++) {
+			if (imageBytes[i] != decodedBytes[i]) {
+				System.out.println("The decoded file is not the same as the original!");
+				return;
+			}
+		}
+		System.out.println("The file was decoded successfully!");
+	}
+
+	/**
+	 * This will compare the size of two files in order to see how much we where
+	 * able to compress the images by.
+	 * 
+	 * @param encodedFile Is the encoded file of bytes.
+	 * @param ImageFile   is the original image file.
+	 * 
+	 * @return The list of the encoded strings.
+	 */
+	private static void compareFileSizes(String encodedFile, String ImageFile) {
+		File file1 = new File(encodedFile);
+		File file2 = new File(ImageFile);
+		// gets the number of bytes used in each file
+		long file1Length = file1.length();
+		long file2Length = file2.length();
+		// calculate the percentage that was saved or lost
+		if (file1Length < file2Length) {
+			long bytesSaved = file2Length - file1Length;
+			String percentage = String.format("%.2f", ((bytesSaved * 1.0) / (file2Length * 1.0)) * 100);
+			System.out.println("The image was compressed by " + percentage + "%");
+		} else {
+			long bytesSaved = file1Length - file2Length;
+			String percentage = String.format("%.2f", ((bytesSaved * 1.0) / (file2Length * 1.0)) * 100);
+			System.out.println("The image used an extra " + percentage + "%");
+		}
+	}
+
+	/**
+	 * This will convert the array of strings into the correct form of bytes.
+	 * 
+	 * @param encodedBytes The encoded path on the tree.
+	 * 
+	 * @return The converted list of bytes.
+	 */
+	private static byte[] generateAllBytes(ArrayList<String> encodedBytes) {
+		// convert to a single string of bytes
+		StringBuilder allBits = new StringBuilder();
+		for (String encodedString : encodedBytes) {
+			allBits.append(encodedString);
+		}
+		// get the bytes in forms of 8's
+		byte[] theBytes = new byte[allBits.length() / 8];
+		for (int i = 0; i < encodedBytes.size(); i += 8) {
+			int end = i + 8 < allBits.length() ? i : allBits.length();
+			allBits.substring(i, end);
+		}
+		for (int i = 0; i < allBits.length() / 8; i++) {
+			theBytes[i] = (byte) Integer.parseInt(encodedBytes.get(i), 2);
+		}
+		// System.out.println(allBits.toString());
+		return theBytes;
+	}
+
+	/**
+	 * This will decode the original path into its original list of bytes.
+	 * 
+	 * @param encodedBytes The encoded path on the tree.
+	 * @param huffmanTree  The tree used for encoding.
+	 * 
+	 * @return The converted list of bytes.
+	 */
 	private static byte[] decode(ArrayList<String> encodedBytes, HuffmanTree huffmanTree) {
-		byte[] decodedBytes = new byte[encodedBytes.size()]; 
+		byte[] decodedBytes = new byte[encodedBytes.size()];
 		for (int i = 0; i < encodedBytes.size(); i++) {
 			decodedBytes[i] = huffmanTree.findByteFromPath(encodedBytes.get(i), huffmanTree.root);
 		}
@@ -123,7 +213,7 @@ public class CreateTree {
 	 * This will find the node specified the the byte.
 	 * 
 	 * @param theNodes Is the list of nodes containing the frequencies.
-	 * @param aByte Is the byte to search for.
+	 * @param aByte    Is the byte to search for.
 	 * 
 	 * @return The found Nodes
 	 */
@@ -134,5 +224,4 @@ public class CreateTree {
 		}
 		return null;
 	}
-
 }
