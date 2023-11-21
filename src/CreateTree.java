@@ -8,19 +8,17 @@
  */
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.PriorityQueue;
 
 public class CreateTree {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws EmptyQueueException {
 		String imagePath = "src/snail.bmp";
 		String encodedFilePath = "src/encodedBytesFile";
 		// load in the images
 		byte[] imageBytes = ImageBitExtraction.getBites(imagePath);
 		ArrayList<Node> theNodes = addNodesToList(imageBytes);
-		PriorityQueue<Node> pQueue = addNodesToQueue(theNodes);
+		NodeQueue pQueue = addNodesToQueue(theNodes);
 		// create a tree from the frequencies
 		HuffmanTree huffmanTree = new HuffmanTree();
 		Node root = huffmanTree.huffmanEncoding(pQueue);
@@ -115,22 +113,6 @@ public class CreateTree {
 		for (int i = 0; i < allBytes.size(); i++) {
 			theBytes[i] = (byte) Integer.parseInt(allBytes.get(i), 2);
 		}
-//		return theBytes;
-//
-//		// convert to a single string of bytes
-//		StringBuilder allBits = new StringBuilder();
-//		for (String encodedString : encodedBytes) {
-//			allBits.append(encodedString);
-//		}
-//		// get the bytes in forms of 8's
-//		byte[] theBytes = new byte[allBits.length() / 8];
-//		for (int i = 0; i < encodedBytes.size(); i += 8) {
-//			int end = i + 8 < allBits.length() ? i : allBits.length();
-//			allBits.substring(i, end);
-//		}
-//		for (int i = 0; i < allBits.length() / 8; i++) {
-//			theBytes[i] = (byte) Integer.parseInt(encodedBytes.get(i), 2);
-//		}
 		return theBytes;
 	}
 
@@ -223,9 +205,10 @@ public class CreateTree {
 	 * 
 	 * @return The priority queue contains all the nodes in the correct order.
 	 */
-	private static PriorityQueue<Node> addNodesToQueue(ArrayList<Node> theNodes) {
-		PriorityQueue<Node> pQueue = new PriorityQueue<Node>(new NodeComparator());
-		for (Node curNode : theNodes) {
+	private static NodeQueue addNodesToQueue(ArrayList<Node> theNodes) {
+		NodeQueue pQueue = new NodeQueue();
+		for (int i = 0; i < theNodes.size(); i++) {
+			Node curNode = theNodes.get(i);
 			pQueue.add(curNode);
 		}
 		return pQueue;
@@ -240,7 +223,8 @@ public class CreateTree {
 	 * @return The found Nodes
 	 */
 	private static Node findNode(ArrayList<Node> theNodes, byte aByte) {
-		for (Node curNode : theNodes) {
+		for (int i = 0; i < theNodes.size(); i++) {
+			Node curNode = theNodes.get(i);
 			if (curNode.getValue() == aByte)
 				return curNode;
 		}

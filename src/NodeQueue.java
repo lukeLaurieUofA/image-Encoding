@@ -35,10 +35,10 @@ public class NodeQueue {
 		if (N2 == null) {
 			return true;
 		}
-		if (N1.getFrequency() < N2.getFrequency()) {
+		if (N1.getFrequency() <= N2.getFrequency()) {
 			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -93,6 +93,14 @@ public class NodeQueue {
 	 */
 	public boolean isEmpty() {
 		return (this.size == 0);
+	}
+	
+	/**
+	 * Gets the size.
+	 * @return Gets the size
+	 */
+	public int size() {
+		return size;
 	}
 	
 	/**

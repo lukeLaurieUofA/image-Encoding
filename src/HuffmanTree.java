@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 public class HuffmanTree {	
 	Node root;
 	
-	public Node huffmanEncoding(PriorityQueue<Node> pQueue) {
+	public Node huffmanEncoding(NodeQueue pQueue) throws EmptyQueueException {
 		//loop until there is only one Node in the queue.
 		//This node will be the root of the final tree.
 		while (pQueue.size() > 1) {
