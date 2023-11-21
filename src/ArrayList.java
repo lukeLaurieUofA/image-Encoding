@@ -2,7 +2,6 @@
  * File: DynamicArray.java
  * Purpose: This program creates a class that represents a resizeable array
  *          that you can do certain operations on.
- * Course: CSC 210, 1st semester
  */
 
 /**
