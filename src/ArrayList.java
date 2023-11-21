@@ -1,9 +1,5 @@
-import java.util.Arrays;
-import java.util.Objects;
-
 /*
  * File: DynamicArray.java
- * Author: Connor Kippes
  * Purpose: This program creates a class that represents a resizeable array
  *          that you can do certain operations on.
  * Course: CSC 210, 1st semester
