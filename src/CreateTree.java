@@ -94,21 +94,43 @@ public class CreateTree {
 	 * @return The converted list of bytes.
 	 */
 	private static byte[] generateAllBytes(ArrayList<String> encodedBytes) {
-		// convert to a single string of bytes
-		StringBuilder allBits = new StringBuilder();
-		for (String encodedString : encodedBytes) {
-			allBits.append(encodedString);
-		}
+		String curByte = "";
 		// get the bytes in forms of 8's
-		byte[] theBytes = new byte[allBits.length() / 8];
+		ArrayList<String> allBytes = new ArrayList<>(); 
 		for (int i = 0; i < encodedBytes.size(); i += 8) {
-			int end = i + 8 < allBits.length() ? i : allBits.length();
-			allBits.substring(i, end);
+			// determine when the byte is full
+			String byteSequence = allBytes.get(i); 
+			int byteSize = curByte.length() + byteSequence.length();  
+			if (byteSize < 8) {
+				curByte += byteSequence;
+			} else {
+				String firstSequence = byteSequence.substring(0, byteSize - 8);
+				String secondSequence = byteSequence.substring(byteSize - 8, byteSequence.length()); 
+				curByte += firstSequence; 
+				allBytes.add(curByte); 
+				curByte = "";
+			}
 		}
-		for (int i = 0; i < allBits.length() / 8; i++) {
-			theBytes[i] = (byte) Integer.parseInt(encodedBytes.get(i), 2);
+		byte[] theBytes = new byte[allBytes.size()];
+		for (int i = 0; i < allBytes.size(); i++) {
+			theBytes[i] = (byte) Integer.parseInt(allBytes.get(i), 2);
 		}
-		// System.out.println(allBits.toString());
+//		return theBytes;
+//
+//		// convert to a single string of bytes
+//		StringBuilder allBits = new StringBuilder();
+//		for (String encodedString : encodedBytes) {
+//			allBits.append(encodedString);
+//		}
+//		// get the bytes in forms of 8's
+//		byte[] theBytes = new byte[allBits.length() / 8];
+//		for (int i = 0; i < encodedBytes.size(); i += 8) {
+//			int end = i + 8 < allBits.length() ? i : allBits.length();
+//			allBits.substring(i, end);
+//		}
+//		for (int i = 0; i < allBits.length() / 8; i++) {
+//			theBytes[i] = (byte) Integer.parseInt(encodedBytes.get(i), 2);
+//		}
 		return theBytes;
 	}
 
