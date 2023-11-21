@@ -97,9 +97,9 @@ public class CreateTree {
 		String curByte = "";
 		// get the bytes in forms of 8's
 		ArrayList<String> allBytes = new ArrayList<>(); 
-		for (int i = 0; i < encodedBytes.size(); i += 8) {
+		for (int i = 0; i < encodedBytes.size(); i++) {
 			// determine when the byte is full
-			String byteSequence = allBytes.get(i); 
+			String byteSequence = encodedBytes.get(i); 
 			int byteSize = curByte.length() + byteSequence.length();  
 			if (byteSize < 8) {
 				curByte += byteSequence;
@@ -108,7 +108,7 @@ public class CreateTree {
 				String secondSequence = byteSequence.substring(byteSize - 8, byteSequence.length()); 
 				curByte += firstSequence; 
 				allBytes.add(curByte); 
-				curByte = "";
+				curByte = secondSequence;
 			}
 		}
 		byte[] theBytes = new byte[allBytes.size()];
