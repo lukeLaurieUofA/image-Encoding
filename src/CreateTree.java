@@ -7,24 +7,129 @@
  * Date: 10/20/2023
  */
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.HashMap;
-import java.util.PriorityQueue;
 
 public class CreateTree {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws EmptyQueueException {
+		String imagePath = "src/snail.bmp";
+		String encodedFilePath = "src/encodedBytesFile";
 		// load in the images
-		byte[] imageBytes = ImageBitExtraction.getBites("smileyface.jpg");
+		byte[] imageBytes = ImageBitExtraction.getBites(imagePath);
 		ArrayList<Node> theNodes = addNodesToList(imageBytes);
-		PriorityQueue<Node> pQueue = addNodesToQueue(theNodes);
+		NodeQueue pQueue = addNodesToQueue(theNodes);
 		// create a tree from the frequencies
 		HuffmanTree huffmanTree = new HuffmanTree();
 		Node root = huffmanTree.huffmanEncoding(pQueue);
 		// maps each byte to their encoded values
 		HashMap<Byte, String> encodingMappings = encodeBytesIntoMap(huffmanTree, root, imageBytes);
 		ArrayList<String> encodedBytes = encodeBytes(imageBytes, encodingMappings);
-		System.out.println(encodedBytes);
+		byte[] theBytes = generateAllBytes(encodedBytes);
+		// writes the compressed bytes to the file
+		WriteToFile.write(theBytes, encodedFilePath);
+		compareFileSizes(encodedFilePath, imagePath);
+		// decode the bytes back to the original
+		byte[] decodedBytes = decode(encodedBytes, huffmanTree);
+		checkFilesMatch(imageBytes, decodedBytes);
+	}
+
+	/**
+	 * This will compare two files of bytes to make sure that they match.
+	 * 
+	 * @param imageBytes   is the bytes from the image.
+	 * @param decodedBytes is the bytes that where decoded.
+	 * 
+	 * @return The list of the encoded strings.
+	 */
+	private static void checkFilesMatch(byte[] imageBytes, byte[] decodedBytes) {
+		// verify that each of the bytes match
+		if (imageBytes.length != decodedBytes.length) {
+			System.out.println("The decoded file is not the same as the original!");
+			return;
+		}
+		for (int i = 0; i < imageBytes.length; i++) {
+			if (imageBytes[i] != decodedBytes[i]) {
+				System.out.println("The decoded file is not the same as the original!");
+				return;
+			}
+		}
+		System.out.println("The file was decoded successfully!");
+	}
+
+	/**
+	 * This will compare the size of two files in order to see how much we where
+	 * able to compress the images by.
+	 * 
+	 * @param encodedFile Is the encoded file of bytes.
+	 * @param ImageFile   is the original image file.
+	 * 
+	 * @return The list of the encoded strings.
+	 */
+	private static void compareFileSizes(String encodedFile, String ImageFile) {
+		File file1 = new File(encodedFile);
+		File file2 = new File(ImageFile);
+		// gets the number of bytes used in each file
+		long file1Length = file1.length();
+		long file2Length = file2.length();
+		// calculate the percentage that was saved or lost
+		if (file1Length < file2Length) {
+			long bytesSaved = file2Length - file1Length;
+			String percentage = String.format("%.2f", ((bytesSaved * 1.0) / (file2Length * 1.0)) * 100);
+			System.out.println("The image was compressed by " + percentage + "%");
+		} else {
+			long bytesSaved = file1Length - file2Length;
+			String percentage = String.format("%.2f", ((bytesSaved * 1.0) / (file2Length * 1.0)) * 100);
+			System.out.println("The image used an extra " + percentage + "%");
+		}
+	}
+
+	/**
+	 * This will convert the array of strings into the correct form of bytes.
+	 * 
+	 * @param encodedBytes The encoded path on the tree.
+	 * 
+	 * @return The converted list of bytes.
+	 */
+	private static byte[] generateAllBytes(ArrayList<String> encodedBytes) {
+		String curByte = "";
+		// get the bytes in forms of 8's
+		ArrayList<String> allBytes = new ArrayList<>(); 
+		for (int i = 0; i < encodedBytes.size(); i++) {
+			// determine when the byte is full
+			String byteSequence = encodedBytes.get(i); 
+			int byteSize = curByte.length() + byteSequence.length();  
+			if (byteSize < 8) {
+				curByte += byteSequence;
+			} else {
+				String firstSequence = byteSequence.substring(0, byteSize - 8);
+				String secondSequence = byteSequence.substring(byteSize - 8, byteSequence.length()); 
+				curByte += firstSequence; 
+				allBytes.add(curByte); 
+				curByte = secondSequence;
+			}
+		}
+		byte[] theBytes = new byte[allBytes.size()];
+		for (int i = 0; i < allBytes.size(); i++) {
+			theBytes[i] = (byte) Integer.parseInt(allBytes.get(i), 2);
+		}
+		return theBytes;
+	}
+
+	/**
+	 * This will decode the original path into its original list of bytes.
+	 * 
+	 * @param encodedBytes The encoded path on the tree.
+	 * @param huffmanTree  The tree used for encoding.
+	 * 
+	 * @return The converted list of bytes.
+	 */
+	private static byte[] decode(ArrayList<String> encodedBytes, HuffmanTree huffmanTree) {
+		byte[] decodedBytes = new byte[encodedBytes.size()];
+		for (int i = 0; i < encodedBytes.size(); i++) {
+			decodedBytes[i] = huffmanTree.findByteFromPath(encodedBytes.get(i), huffmanTree.root);
+		}
+		return decodedBytes;
 	}
 
 	/**
@@ -100,9 +205,10 @@ public class CreateTree {
 	 * 
 	 * @return The priority queue contains all the nodes in the correct order.
 	 */
-	private static PriorityQueue<Node> addNodesToQueue(ArrayList<Node> theNodes) {
-		PriorityQueue<Node> pQueue = new PriorityQueue<Node>(new NodeComparator());
-		for (Node curNode : theNodes) {
+	private static NodeQueue addNodesToQueue(ArrayList<Node> theNodes) {
+		NodeQueue pQueue = new NodeQueue();
+		for (int i = 0; i < theNodes.size(); i++) {
+			Node curNode = theNodes.get(i);
 			pQueue.add(curNode);
 		}
 		return pQueue;
@@ -112,16 +218,16 @@ public class CreateTree {
 	 * This will find the node specified the the byte.
 	 * 
 	 * @param theNodes Is the list of nodes containing the frequencies.
-	 * @param aByte Is the byte to search for.
+	 * @param aByte    Is the byte to search for.
 	 * 
 	 * @return The found Nodes
 	 */
 	private static Node findNode(ArrayList<Node> theNodes, byte aByte) {
-		for (Node curNode : theNodes) {
+		for (int i = 0; i < theNodes.size(); i++) {
+			Node curNode = theNodes.get(i);
 			if (curNode.getValue() == aByte)
 				return curNode;
 		}
 		return null;
 	}
-
 }

@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 public class HuffmanTree {	
 	Node root;
 	
-	public Node huffmanEncoding(PriorityQueue<Node> pQueue) {
+	public Node huffmanEncoding(NodeQueue pQueue) throws EmptyQueueException {
 		//loop until there is only one Node in the queue.
 		//This node will be the root of the final tree.
 		while (pQueue.size() > 1) {
@@ -48,7 +48,6 @@ public class HuffmanTree {
 	 * @return The String containing the path or null if it does not exist.
 	 */
 	public String findPathToNode(Byte nodeValue, Node curNode) {
-		//System.out.println("before");
 		if (null == curNode) return null; 
 		if (null != curNode.getValue() && curNode.getValue() == nodeValue) return ""; 
 		// search left and right subtrees to find a node
@@ -57,6 +56,25 @@ public class HuffmanTree {
 		String rightSearch = findPathToNode(nodeValue, curNode.getRight());
 		if (null != rightSearch) return "1" + rightSearch; 
 		return null;
+	}
+	
+	/**
+	 * This will search a specified path on the tree in order to find the 
+	 * byte which is searching for.
+	 * 
+	 * @param path is the path in which to search for the byte for
+	 * @param curNode    Is the current node being searched in the recursion
+	 * 
+	 * @return The Byte that was found at the specified path.
+	 */
+	public Byte findByteFromPath(String path, Node curNode) {
+		if (null == curNode) return null; 
+		if (path.equals("")) {
+			return curNode.getValue();
+		}
+		// determine to search the left or right node 
+		Node searchNode = path.charAt(0) == '0' ? curNode.getLeft() : curNode.getRight();
+		return findByteFromPath(path.substring(1), searchNode);
 	}
 	
 	/**
